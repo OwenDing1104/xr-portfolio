@@ -190,38 +190,42 @@ function Hero() {
             联系我
           </a>
         </div>
+        <div className="tag-row hero-tags" aria-label="核心关键词">
+          {profile.tags.map((tag) => (
+            <span className="tag" key={tag}>
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
 
-      <aside className="profile-panel" aria-label="个人信息">
-        <dl>
-          <div>
-            <dt>方向</dt>
-            <dd>{profile.title}</dd>
-          </div>
-          <div>
-            <dt>定位</dt>
-            <dd>{profile.location}</dd>
-          </div>
-          <div>
-            <dt>邮箱</dt>
-            <dd>
-              <a href={`mailto:${profile.email}`}>{profile.email}</a>
-            </dd>
-          </div>
-          <div>
-            <dt>微信</dt>
-            <dd>{profile.wechat}</dd>
-          </div>
-        </dl>
+      <aside className="hero-aside" aria-label="个人信息">
+        <figure className="profile-photo-frame">
+          <img src={profile.photo} alt={`${profile.name} portrait`} />
+        </figure>
+        <div className="profile-panel">
+          <dl>
+            <div>
+              <dt>方向</dt>
+              <dd>{profile.title}</dd>
+            </div>
+            <div>
+              <dt>定位</dt>
+              <dd>{profile.location}</dd>
+            </div>
+            <div>
+              <dt>邮箱</dt>
+              <dd>
+                <a href={`mailto:${profile.email}`}>{profile.email}</a>
+              </dd>
+            </div>
+            <div>
+              <dt>微信</dt>
+              <dd>{profile.wechat}</dd>
+            </div>
+          </dl>
+        </div>
       </aside>
-
-      <div className="tag-row hero-tags" aria-label="核心关键词">
-        {profile.tags.map((tag) => (
-          <span className="tag" key={tag}>
-            {tag}
-          </span>
-        ))}
-      </div>
     </section>
   );
 }
