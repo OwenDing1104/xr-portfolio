@@ -75,6 +75,18 @@ function App() {
     setOpenProjectId(nextProjectId);
   };
 
+  const handleCloseProject = () => {
+    shouldScrollToProjectRef.current = false;
+    setOpenProjectId("");
+
+    window.requestAnimationFrame(() => {
+      document.getElementById("projects")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  };
+
   const handleSelectProject = (projectId: string) => {
     if (openProjectId === projectId) {
       scrollToProjectDetail(projectId);
@@ -99,6 +111,7 @@ function App() {
         <Projects
           openProject={openProject}
           openProjectId={openProjectId}
+          onCloseProject={handleCloseProject}
           onToggleProject={handleToggleProject}
         />
         <Contact />
@@ -195,6 +208,10 @@ function Hero() {
               <a href={`mailto:${profile.email}`}>{profile.email}</a>
             </dd>
           </div>
+          <div>
+            <dt>微信</dt>
+            <dd>{profile.wechat}</dd>
+          </div>
         </dl>
       </aside>
 
@@ -249,61 +266,88 @@ function Skills() {
 type ProjectsProps = {
   openProject: Project | undefined;
   openProjectId: string;
+  onCloseProject: () => void;
   onToggleProject: (projectId: string) => void;
 };
 
-function Projects({ openProject, openProjectId, onToggleProject }: ProjectsProps) {
+function Projects({
+  openProject,
+  openProjectId,
+  onCloseProject,
+  onToggleProject
+}: ProjectsProps) {
   return (
     <section className="content-section" id="projects">
       <div className="section-heading section-heading-wide">
         <h2>项目展示</h2>
-        <p>
-          每个项目都展示一个明确的 XR 问题、我的职责、实现挑战和后续可补充的素材位置。
-        </p>
       </div>
 
       <div className="project-grid">
-        {projects.map((project) => {
+        {projects.map((project, index) => {
           const isOpen = openProjectId === project.id;
+          const visibleTags = project.tags.slice(0, 3);
 
           return (
-            <article className={`project-card${isOpen ? " project-card-open" : ""}`} key={project.id}>
+            <article
+              aria-controls={`${project.id}-detail`}
+              aria-expanded={isOpen}
+              className={`project-card project-card-interactive${isOpen ? " project-card-open" : ""}`}
+              key={project.id}
+              onClick={() => onToggleProject(project.id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  onToggleProject(project.id);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+            >
               <div className="project-card-body">
+                <div className="project-card-topline">
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <span>{project.timeline}</span>
+                </div>
                 <div>
                   <h3>{project.title}</h3>
                   <p className="project-subtitle">{project.subtitle}</p>
-                  <p className="project-timeline">{project.timeline}</p>
                 </div>
                 <p>{project.summary}</p>
-                <p className="project-role">{project.role}</p>
                 <div className="tag-row">
-                  {project.tags.map((tag) => (
+                  {visibleTags.map((tag) => (
                     <span className="tag" key={tag}>
                       {tag}
                     </span>
                   ))}
+                  {project.tags.length > visibleTags.length ? (
+                    <span className="tag tag-count">
+                      +{project.tags.length - visibleTags.length}
+                    </span>
+                  ) : null}
                 </div>
               </div>
-              <button
-                className="project-toggle"
-                type="button"
-                aria-expanded={isOpen}
-                aria-controls={`${project.id}-detail`}
-                onClick={() => onToggleProject(project.id)}
-              >
-                {isOpen ? "收起详情" : "展开详情"}
-              </button>
+              <div className="project-card-footer">
+                <span>{isOpen ? "当前展开" : "查看详情"}</span>
+              </div>
             </article>
           );
         })}
       </div>
 
-      {openProject ? <ProjectDetail project={openProject} /> : null}
+      {openProject ? (
+        <ProjectDetail onClose={onCloseProject} project={openProject} />
+      ) : null}
     </section>
   );
 }
 
-function ProjectDetail({ project }: { project: Project }) {
+function ProjectDetail({
+  onClose,
+  project
+}: {
+  onClose: () => void;
+  project: Project;
+}) {
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const activeMedia = project.media[activeMediaIndex] ?? project.media[0];
 
@@ -388,6 +432,12 @@ function ProjectDetail({ project }: { project: Project }) {
           ))}
         </div>
       </section>
+
+      <div className="project-detail-actions">
+        <button className="project-collapse" type="button" onClick={onClose}>
+          收起详情
+        </button>
+      </div>
     </article>
   );
 }
@@ -401,15 +451,21 @@ function Contact() {
           如果你对我的 VR / XR 项目、Unity 原型开发、游戏交互设计或用户研究经历感兴趣，欢迎联系我。
         </p>
       </div>
-      <a className="button button-primary" href={`mailto:${profile.email}`}>
-        {profile.email}
-      </a>
+      <div className="contact-actions" aria-label="联系方式">
+        <a className="button button-primary" href={`mailto:${profile.email}`}>
+          {profile.email}
+        </a>
+        <span className="contact-wechat">
+          <span>微信</span>
+          {profile.wechat}
+        </span>
+      </div>
     </section>
   );
 }
 
 const mediaKindLabel = {
-  image: "图片",
+  image: "后续补充",
   gif: "GIF",
   video: "视频",
   diagram: "流程图"

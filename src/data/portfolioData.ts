@@ -3,6 +3,7 @@ export type Profile = {
   title: string;
   location: string;
   email: string;
+  wechat: string;
   intro: string;
   tags: string[];
   about: string[];
@@ -43,6 +44,7 @@ export const profile: Profile = {
   title: "XR Interaction Developer, User Researcher",
   location: "Ann Arbor, MI",
   email: "owending1104@gmail.com",
+  wechat: "DCH13971687242",
   intro:
     "我擅长 XR 以及游戏交互和用户研究方法，设计并开发面向大众的沉浸式体验的 VR / AR。项目横跨文化遗产 VR、VR 生存场景、历史空间复刻、实时环境反馈以及部分学术研究。",
   tags: [
@@ -91,6 +93,66 @@ export const skillGroups: SkillGroup[] = [
 ];
 
 const projectData: Project[] = [
+  {
+    id: "genai-xr-thesis",
+    title: "GenAI-XR 注意力引导研究",
+    subtitle: "硕士论文：面向未来 AR 眼镜的研究型原型",
+    timeline: "2025.09 – 至今",
+    summary:
+      "一个探索 Generative AI 与 XR 注意力引导结合的硕士论文项目，研究如何在课堂等信息密集场景中，通过 AR 高亮和 DR 弱化帮助用户跟随讲解重点。",
+    role:
+      "负责论文研究框架、实验条件设计、AI 提示词与内容生成逻辑、XR 注意力提示原型设计，以及后续用户研究与评估规划。",
+    tags: [
+      "Generative AI",
+      "XR Research",
+      "AR Highlighting",
+      "Diminished Reality",
+      "Prompt Engineering",
+      "User Study",
+      "Attention Guidance"
+    ],
+    sections: [
+      {
+        title: "项目概述",
+        body: [
+          "这是我的硕士论文方向，聚焦 Generative AI 如何参与 XR 场景中的注意力引导。项目设想面向未来 AR 眼镜或混合现实学习场景：系统根据课堂画面、教师讲解和当前任务语境，生成 AR 高亮或 Diminished Reality 弱化效果，帮助用户在信息密集环境中跟随讲解重点。",
+          "该项目目前处于论文研究与原型整理阶段，因此暂不展示公开素材。页面先保留项目位置，后续会补充原型截图、实验流程图或论文相关展示材料。"
+        ]
+      },
+      {
+        title: "研究目标",
+        body: [
+          "项目希望回答的问题是：当用户处在复杂视觉环境中时，AI 生成的 XR 视觉提示是否能够有效降低注意力搜索成本，并帮助用户更稳定地理解当前讲解重点。研究重点不只是生成视觉效果，而是让提示和学习任务、空间对象、用户注意力状态之间形成可解释的关系。"
+        ]
+      },
+      {
+        title: "我的职责",
+        body: [
+          "我负责该论文项目的研究问题定义、实验条件设计、AI 提示词与生成逻辑规划，以及 XR 注意力提示原型的交互设计。设计中会比较不同提示策略，例如直接 AR 高亮、降低非重点区域显著性的 DR 弱化，以及不使用智能提示的基线条件。",
+          "同时，我会规划用户研究流程，包括任务设计、行为观察、主观反馈和认知负荷相关指标，用于评估这些提示策略是否真正改善理解、注意力分配和学习体验。"
+        ]
+      },
+      {
+        title: "实现挑战",
+        body: [
+          "这个项目的主要挑战在于把 AI 输出转化为稳定、可理解、不过度干扰的空间提示。课堂或学习场景中的重点经常随讲解内容变化，如果提示更新过慢会失去意义，如果提示过强又可能遮挡信息或制造额外认知负担。",
+          "另一个挑战是评估方法。XR 注意力引导不能只看用户是否觉得效果新奇，还需要判断它是否真的帮助用户更快定位重点、更好理解内容，并且不会因为视觉提示过多而增加压力。"
+        ]
+      },
+      {
+        title: "当前状态",
+        body: [
+          "该项目作为硕士论文正在推进中，目前暂无可公开展示的图片或视频素材。后续会在论文进展允许的情况下补充原型界面、交互流程、实验设计和评估结果。"
+        ]
+      }
+    ],
+    media: [
+      {
+        label: "硕士论文项目暂无公开素材，敬请期待",
+        kind: "image"
+      }
+    ]
+  },
   {
     id: "vision-pro-nursing-xr",
     title: "Vision Pro 护理教学 XR 项目",
