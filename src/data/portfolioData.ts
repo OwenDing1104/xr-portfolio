@@ -46,7 +46,7 @@ export const profile: Profile = {
   location: "Ann Arbor, MI",
   email: "owending1104@gmail.com",
   wechat: "DCH13971687242",
-  photo: "/assets/profile-photo.jpg",
+  photo: "/assets/profile-photo.png",
   intro:
     "我关注 XR、游戏交互与用户研究，擅长将沉浸式体验从概念设计推进到可交互原型。我的项目覆盖文化遗产 VR、医疗教学 XR、VR 生存探索、历史空间复刻、实时环境反馈与 GenAI 辅助的注意力引导研究。",
   tags: [
