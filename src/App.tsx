@@ -7,9 +7,14 @@ import {
 } from "./data/portfolioData";
 
 function App() {
+  const isPdfMode = new URLSearchParams(window.location.search).get("pdf") === "1";
   const [openProjectId, setOpenProjectId] = useState("");
   const [activeSection, setActiveSection] = useState("top");
   const shouldScrollToProjectRef = useRef(false);
+
+  if (isPdfMode) {
+    return <PrintablePortfolio />;
+  }
 
   const openProject = useMemo(
     () => projects.find((project) => project.id === openProjectId),
@@ -99,12 +104,15 @@ function App() {
 
   return (
     <div className="site-shell">
+      <a className="skip-link" href="#main-content">
+        跳到主要内容
+      </a>
       <SideNav
         activeSection={activeSection}
         openProjectId={openProjectId}
         onSelectProject={handleSelectProject}
       />
-      <main className="page-content">
+      <main className="page-content" id="main-content">
         <Hero />
         <About />
         <Skills />
@@ -114,6 +122,20 @@ function App() {
           onCloseProject={handleCloseProject}
           onToggleProject={handleToggleProject}
         />
+        <Contact />
+      </main>
+    </div>
+  );
+}
+
+function PrintablePortfolio() {
+  return (
+    <div className="site-shell pdf-shell">
+      <main className="page-content pdf-content">
+        <Hero />
+        <About />
+        <Skills />
+        <PrintableProjects />
         <Contact />
       </main>
     </div>
@@ -148,6 +170,7 @@ function SideNav({
             <a
               className={activeSection === item.id ? "active" : ""}
               href={`#${item.id}`}
+              aria-current={activeSection === item.id ? "page" : undefined}
             >
               {item.label}
             </a>
@@ -158,6 +181,7 @@ function SideNav({
                     className={openProjectId === project.id ? "active" : ""}
                     href={`#${project.id}-detail`}
                     key={project.id}
+                    aria-current={openProjectId === project.id ? "location" : undefined}
                     onClick={(event) => {
                       event.preventDefault();
                       onSelectProject(project.id);
@@ -201,7 +225,7 @@ function Hero() {
 
       <aside className="hero-aside" aria-label="个人信息">
         <figure className="profile-photo-frame">
-          <img src={profile.photo} alt={`${profile.name} portrait`} />
+          <img src={profile.photo} alt={`${profile.name} 头像`} />
         </figure>
         <div className="profile-panel">
           <dl>
@@ -295,6 +319,7 @@ function Projects({
             <article
               aria-controls={`${project.id}-detail`}
               aria-expanded={isOpen}
+              aria-label={`${isOpen ? "收起" : "展开"}${project.title}详情`}
               className={`project-card project-card-interactive${isOpen ? " project-card-open" : ""}`}
               key={project.id}
               onClick={() => onToggleProject(project.id)}
@@ -342,6 +367,87 @@ function Projects({
         <ProjectDetail onClose={onCloseProject} project={openProject} />
       ) : null}
     </section>
+  );
+}
+
+function PrintableProjects() {
+  return (
+    <section className="content-section pdf-projects-section" id="projects">
+      <div className="section-heading section-heading-wide">
+        <h2>项目展示</h2>
+      </div>
+
+      <div className="pdf-project-list">
+        {projects.map((project, index) => (
+          <PrintableProjectDetail
+            index={index}
+            key={project.id}
+            project={project}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PrintableProjectDetail({
+  index,
+  project
+}: {
+  index: number;
+  project: Project;
+}) {
+  const printableMedia =
+    project.media.find((item) => item.src && item.kind !== "video") ??
+    project.media[0];
+
+  return (
+    <article className="pdf-project">
+      <div className="pdf-project-heading">
+        <div>
+          <p className="pdf-project-number">
+            {String(index + 1).padStart(2, "0")} / {project.timeline}
+          </p>
+          <h3>{project.title}</h3>
+          <p>{project.subtitle}</p>
+        </div>
+        <div className="tag-row detail-tags">
+          {project.tags.map((tag) => (
+            <span className="tag" key={tag}>
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="detail-copy">
+        {project.sections.map((section) => (
+          <section className="detail-section" key={section.title}>
+            <h4>{section.title}</h4>
+            {section.body.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </section>
+        ))}
+      </div>
+
+      <section className="pdf-media-panel">
+        <h4>可展示素材</h4>
+        {printableMedia?.src && printableMedia.kind !== "video" ? (
+          <figure>
+            <img
+              src={printableMedia.src}
+              alt={printableMedia.alt ?? printableMedia.label}
+            />
+            <figcaption>{printableMedia.label}</figcaption>
+          </figure>
+        ) : (
+          <div className="pdf-media-note">
+            {printableMedia?.label ?? "素材后续补充"}
+          </div>
+        )}
+      </section>
+    </article>
   );
 }
 
